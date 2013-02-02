@@ -5,41 +5,53 @@ define([
     "/js/drag.js"
 ], function () {
 
+    // Global variables
     var self;
+    var pieces;
+    var xMin = 10, yMin = 70;
+    var x, y;
     
+    // Positions object
+    var positions = {
+        "B" : [],
+        "W" : []
+    };
+    
+    // On load
     function init(config) {
         self = this;
         
-        blackCircles = $("#blackCircles");
-        blackCircles.html("");
+        pieces = $("#pieces");
+        pieces.html("");
         CreateBlackCircles();
         CreateWhiteCircles();
     }
- 
-    var blackCircles;
-    var whiteCircles;
 
     function CreateBlackCircles(){
-        var x = 10, y = 10;
-        var html = ""
+        var html = "";
         for(var i = 0; i<9; i++){
-            x = 10 + Math.floor(Math.random()*100);
-            y = 10 + Math.floor(Math.random()*100);
-            html += "<div style=\"left: " + x + "px; top: " + y + "px;\" class=\"box content black\" onmousedown=\"dragStart(event)\"></div>";
+            x = xMin + Math.floor(Math.random()*100);
+            y = yMin + Math.floor(Math.random()*100);
+
+            positions.B.push({ "x" : x, "y" : y });
+            
+            html += "<div id='B" + i + "' style='left: " + x + "px; top: " + y + "px;' class='box content black' onmousedown='dragStart(event)'></div>";
         }
-        blackCircles.html(html);
+        pieces.append(html);
     }
 
     function CreateWhiteCircles(){
-        var x = 10, y = 10;
         var html = "";
         
         for(var i = 0; i<9; i++){
-            x = 120 + Math.floor(Math.random()*100);
-            y = 10 + Math.floor(Math.random()*100);
-            html += "<div style=\"left: " + x + "px; top: " + y + "px;\" class=\"box content white\" onmousedown=\"dragStart(event)\"></div>";
+            x = xMin + 150 + Math.floor(Math.random()*100);
+            y = yMin + Math.floor(Math.random()*100);
+            
+           positions.W.push({ "x" : x, "y" : y });
+            
+            html += "<div id='W" + i + "'style='left: " + x + "px; top: " + y + "px;' class='box content white' onmousedown='dragStart(event)'></div>";
         }
-        blackCircles.html(html);
+        pieces.append(html);
     }
 
     return init;
