@@ -22,7 +22,6 @@ exports.update = function(link) {
 // Built positions object
 exports.setPositions = function(link) {
     positions = link.data;
-    console.log(positions);
     send.ok(link.res, "OK");
 };
 

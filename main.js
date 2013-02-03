@@ -25,7 +25,6 @@ define([
         pieces.html("");
 
         self.link("getPositions", function(err, pos) {
-            console.log(pos);
             // If positions were already set
             if (!$.isEmptyObject(pos)) {
                 positions = pos;
@@ -43,20 +42,15 @@ define([
             }
             // ... if not, create them
             else {
-                console.log("False");
-                
                 createBlackPieces();
                 createWhitePieces();
 
-                self.link("setPositions", { data: positions }, function() {
-                    console.log(positions);
-                });
+                self.link("setPositions", { data: positions });
             }
             
             setHandlers();
             
             window.setInterval(function() {
-                console.log("animate");
                 animate();
             }, 3000);
         });
@@ -75,7 +69,6 @@ define([
 
     // Set handlers
     function setHandlers() {
-        console.log("setHandlers");
         $(".piece").on("mouseup", function() {
             var id = $(this).attr("id");
             var x = $(this).css("left");
@@ -98,16 +91,13 @@ define([
 
     // Update the points
     function update(id, x, y) {
-        console.log("POS");
         var dataObject = {
             "id" : id,
             "x" : x,
             "y" : y
         };
 
-        self.link("update", { data : dataObject }, function(err, pos) {
-            console.log(pos);
-        });
+        self.link("update", { data : dataObject });
     }
 
     // Functions for creating pieces
