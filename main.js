@@ -13,8 +13,8 @@ define([
     
     // Positions object
     var positions = {
-        "B" : [],
-        "W" : []
+        "black" : [],
+        "white" : []
     };
     
     // On load
@@ -23,19 +23,62 @@ define([
         
         pieces = $("#pieces");
         pieces.html("");
+        
         CreateBlackCircles();
         CreateWhiteCircles();
+        
+        setHandlers();
+        
+        self.link("setPositions", { data: positions }, function() {
+            console.log(positions);
+        });
+        
+        window.setInterval(function() {
+            animate();
+        }, 3000);
     }
 
+    // Animate
+    function animate() {
+        for (var i = 0; i < 9; i++) {
+            $("#B" + i).animate({ left : positions.black[i].x + "px", top : positions.black[i].y + "px" });
+            $("#W" + i).animate({ left : positions.white[i].x + "px", top : positions.white[i].y + "px" });
+        }
+    }
+
+    // Set handlers
+    function setHandlers() {
+        $(".piece").on("mouseup", function() {
+            var id = $(this).attr("id");
+            var x = $(this).css("left");
+            var y = $(this).css("top");
+            update(id, x, y);
+        });
+    }
+    
+    // Update the points
+    function update(id, x, y) {
+        var dataObject = {
+            "id" : id,
+            "x" : x,
+            "y" : y
+        };
+
+        self.link("update", { data : dataObject }, function(err, pos) {
+            positions = pos;
+        });
+    }
+
+    // Functions for creating pieces
     function CreateBlackCircles(){
         var html = "";
         for(var i = 0; i<9; i++){
             x = xMin + Math.floor(Math.random()*100);
             y = yMin + Math.floor(Math.random()*100);
 
-            positions.B.push({ "x" : x, "y" : y });
+            positions.black.push({ "x" : x, "y" : y });
             
-            html += "<div id='B" + i + "' style='left: " + x + "px; top: " + y + "px;' class='box content black' onmousedown='dragStart(event)'></div>";
+            html += "<div id='B" + i + "' style='left: " + x + "px; top: " + y + "px;' class='box content black piece' onmousedown='dragStart(event)'></div>";
         }
         pieces.append(html);
     }
@@ -47,12 +90,12 @@ define([
             x = xMin + 150 + Math.floor(Math.random()*100);
             y = yMin + Math.floor(Math.random()*100);
             
-           positions.W.push({ "x" : x, "y" : y });
+           positions.white.push({ "x" : x, "y" : y });
             
-            html += "<div id='W" + i + "'style='left: " + x + "px; top: " + y + "px;' class='box content white' onmousedown='dragStart(event)'></div>";
+            html += "<div id='W" + i + "'style='left: " + x + "px; top: " + y + "px;' class='box content white piece' onmousedown='dragStart(event)'></div>";
         }
         pieces.append(html);
     }
-
+    
     return init;
 });
