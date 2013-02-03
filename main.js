@@ -16,48 +16,88 @@ define([
         "black" : [],
         "white" : []
     };
-    
+
     // On load
     function init(config) {
         self = this;
-        
+
         pieces = $("#pieces");
         pieces.html("");
-        
-        CreateBlackCircles();
-        CreateWhiteCircles();
-        
-        setHandlers();
-        
-        self.link("setPositions", { data: positions }, function() {
-            console.log(positions);
+
+        self.link("getPositions", function(err, pos) {
+            console.log(pos);
+            // If positions were already set
+            if (!$.isEmptyObject(pos)) {
+                positions = pos;
+                
+                var html = "";
+                
+                for(var i = 0; i < 9; i++) {
+                    // Black pieces
+                    html += createPiece("black", "B" + i, positions.black[i].x, positions.black[i].y);
+                    // White pieces
+                    html += createPiece("white", "W" + i, positions.white[i].x, positions.white[i].y);
+                }
+                
+                pieces.append(html);
+            }
+            // ... if not, create them
+            else {
+                console.log("False");
+                
+                createBlackPieces();
+                createWhitePieces();
+
+                self.link("setPositions", { data: positions }, function() {
+                    console.log(positions);
+                });
+            }
+            
+            setHandlers();
+            
+            window.setInterval(function() {
+                console.log("animate");
+                animate();
+            }, 3000);
         });
-        
-        window.setInterval(function() {
-            animate();
-        }, 3000);
     }
 
     // Animate
     function animate() {
-        for (var i = 0; i < 9; i++) {
-            $("#B" + i).animate({ left : positions.black[i].x + "px", top : positions.black[i].y + "px" });
-            $("#W" + i).animate({ left : positions.white[i].x + "px", top : positions.white[i].y + "px" });
-        }
+        self.link("getPositions", function(err, pos) {
+            positions = pos;
+            for (var i = 0; i < 9; i++) {
+                $("#B" + i).animate({ left : positions.black[i].x, top : positions.black[i].y }, 200);
+                $("#W" + i).animate({ left : positions.white[i].x, top : positions.white[i].y }, 200);
+            }
+        });
     }
 
     // Set handlers
     function setHandlers() {
+        console.log("setHandlers");
         $(".piece").on("mouseup", function() {
             var id = $(this).attr("id");
             var x = $(this).css("left");
             var y = $(this).css("top");
             update(id, x, y);
         });
+        
+        $("#resetButton").on("click", function() {
+            self.link("resetGame", { data : $("#pass").val() }, function(err, res) {
+                if(res === "Refresh page") {
+                    location.reload();
+                }
+                else {
+                    alert("Wrong password.");
+                }
+            });
+        });
     }
-    
+
     // Update the points
     function update(id, x, y) {
+        console.log("POS");
         var dataObject = {
             "id" : id,
             "x" : x,
@@ -65,36 +105,41 @@ define([
         };
 
         self.link("update", { data : dataObject }, function(err, pos) {
-            positions = pos;
+            console.log(pos);
         });
     }
 
     // Functions for creating pieces
-    function CreateBlackCircles(){
+    function createBlackPieces(){
         var html = "";
         for(var i = 0; i<9; i++){
             x = xMin + Math.floor(Math.random()*100);
             y = yMin + Math.floor(Math.random()*100);
 
-            positions.black.push({ "x" : x, "y" : y });
-            
-            html += "<div id='B" + i + "' style='left: " + x + "px; top: " + y + "px;' class='box content black piece' onmousedown='dragStart(event)'></div>";
+            positions.black.push({ "x" : x + "px", "y" : y + "px" });
+
+            html += createPiece("black", "B" + i, x, y);
         }
         pieces.append(html);
     }
 
-    function CreateWhiteCircles(){
+    function createWhitePieces(){
         var html = "";
-        
+
         for(var i = 0; i<9; i++){
             x = xMin + 150 + Math.floor(Math.random()*100);
             y = yMin + Math.floor(Math.random()*100);
-            
-           positions.white.push({ "x" : x, "y" : y });
-            
-            html += "<div id='W" + i + "'style='left: " + x + "px; top: " + y + "px;' class='box content white piece' onmousedown='dragStart(event)'></div>";
+
+            positions.white.push({ "x" : x + "px", "y" : y + "px" });
+
+            html += createPiece("white", "W" + i, x, y);
         }
         pieces.append(html);
+    }
+    
+    // Create HTML code for one piece
+    function createPiece(color, id, x, y) {
+        return "<div id='" + id + "' style='left: " + x + "; top: " + y + ";' class='box content " + color + " piece' onmousedown='dragStart(event)'></div>";
     }
     
     return init;

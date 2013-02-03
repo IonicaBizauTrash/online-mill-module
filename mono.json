@@ -6,6 +6,7 @@
     "operations": [
         { "file": "operations.js", "function": "update" },
         { "file": "operations.js", "function": "setPositions" },
-        { "file": "operations.js", "function": "getPositions" }
+        { "file": "operations.js", "function": "getPositions" },
+        { "file": "operations.js", "function": "resetGame" }
     ]
 }

@@ -10,7 +10,7 @@ exports.update = function(link) {
     var idInArray = parseInt(data.id.toString().substring(1));
 
     if(color === "W") {
-        positions.white[idInArray] = { "x" : data.x, "y" : data.y };    
+        positions.white[idInArray] = { "x" : data.x, "y" : data.y };
     }
     else {
         positions.black[idInArray] = { "x" : data.x, "y" : data.y };
@@ -21,7 +21,6 @@ exports.update = function(link) {
 
 // Built positions object
 exports.setPositions = function(link) {
-    console.log("GET Positions");
     positions = link.data;
     console.log(positions);
     send.ok(link.res, "OK");
@@ -31,3 +30,14 @@ exports.setPositions = function(link) {
 exports.getPositions = function(link) {
     send.ok(link.res, positions);
 };
+
+// Reset the game
+exports.resetGame = function(linke) {
+    if(link.data === "IonicaBizauMill") {
+        positions = {};
+        send.ok(link.res, "Refresh page");
+    }
+    else {
+        send.ok(link.res, "Wrong password");
+    }
+}
