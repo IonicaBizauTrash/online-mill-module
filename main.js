@@ -89,6 +89,7 @@ define([
                     location.reload();
                 }
                 else {
+                    $("#pass").val("");
                     alert("Wrong password.");
                 }
             });
