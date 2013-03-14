@@ -1,5 +1,3 @@
-var send = require(CONFIG.root + "/core/send.js").send;
-
 // Positions object
 var positions = {};
 
@@ -16,27 +14,27 @@ exports.update = function(link) {
         positions.black[idInArray] = { "x" : data.x, "y" : data.y };
     }
 
-    send.ok(link.res, positions);
+    link.send(200, positions);
 };
 
 // Built positions object
 exports.setPositions = function(link) {
     positions = link.data;
-    send.ok(link.res, "OK");
+    link.send(200, "OK");
 };
 
 // Get positions operations
 exports.getPositions = function(link) {
-    send.ok(link.res, positions);
+    link.send(200, positions);
 };
 
 // Reset the game
 exports.resetGame = function(linke) {
     if(link.data === "IonicaBizauMill") {
         positions = {};
-        send.ok(link.res, "Refresh page");
+        link.send(200, "Refresh page");
     }
     else {
-        send.ok(link.res, "Wrong password");
+        link.send(200, "Wrong password");
     }
 }
