@@ -20,7 +20,7 @@ exports.update = function(link) {
 // Built positions object
 exports.setPositions = function(link) {
     positions = link.data;
-    link.send(200, "OK");
+    link.send(200);
 };
 
 // Get positions operations
